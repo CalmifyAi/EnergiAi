@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EnergiAIr</title>
+  <title>EnergiAI - Real-Time Energy Optimizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { margin:0; font-family:Arial,sans-serif; background:linear-gradient(135deg,#f8fafc,#eef2f7); color:#111827; }
@@ -32,7 +32,7 @@
 
 <header>
   <nav>
-    <div>EnergiAI</div>
+    <div>⚡ EnergiAI</div>
     <div>
       <span id="navFeatures">Features</span>
       <span id="navHow">How it Works</span>
@@ -95,6 +95,7 @@ const ctx = chartEl.getContext('2d');
 let tracking = false;
 let devices = JSON.parse(localStorage.getItem('devices') || '[]');
 let totalKwh = 0;
+let activeDeviceIndex = 0;
 let totalSavings = Number(localStorage.getItem('totalSavings') || 0);
 
 function defaultDevice() {
@@ -106,8 +107,19 @@ function renderDevices() {
   devices.forEach((d, i) => {
     const row = document.createElement('div');
     row.style.marginBottom = '10px';
+    row.style.padding = '6px';
+    row.style.borderRadius = '8px';
+    row.style.background = i === activeDeviceIndex ? '#eef2ff' : 'transparent';
+
     row.innerHTML = `
-      <input value="${d.name}" style="width:40%" onchange="devices[${i}].name=this.value;saveDevices()" />
+      <input value="${d.name}" style="width:32%" onchange="devices[${i}].name=this.value;saveDevices()" />
+      <input type="number" value="${d.watts}" style="width:18%" onchange="devices[${i}].watts=this.value;saveDevices()" /> W
+      <button style="margin-left:8px;padding:4px 8px;border-radius:6px;border:1px solid #e5e7eb;cursor:pointer;" onclick="setActiveDevice(${i})">Track This</button>
+      <span style="float:right">$${d.cost.toFixed(4)}</span>
+    `;
+    deviceList.appendChild(row);
+  });
+}" style="width:40%" onchange="devices[${i}].name=this.value;saveDevices()" />
       <input type="number" value="${d.watts}" style="width:25%" onchange="devices[${i}].watts=this.value;saveDevices()" /> W
       <span style="float:right">$${d.cost.toFixed(4)}</span>
     `;
@@ -163,12 +175,25 @@ function trackUsage() {
   const price = parseFloat(priceEl.value);
   let dailyKwh = 0;
 
-  devices.forEach(d => {
-    const kwh = (d.watts / 1000) / 3600; // per second
+  if (devices[activeDeviceIndex]) {
+    const d = devices[activeDeviceIndex];
+    const kwh = (d.watts / 1000) / 3600; // per second for active device only
     d.kwh += kwh;
     d.cost += kwh * price;
     dailyKwh += d.kwh;
-  });
+  }
+
+  totalKwh = dailyKwh;
+  usage.textContent = (dailyKwh * 24).toFixed(2);
+  cost.textContent = (dailyKwh * price * 24).toFixed(2);
+
+  generateSuggestions(price);
+  renderSavings();
+
+  saveDevices();
+  renderDevices();
+  renderChart();
+});
 
   totalKwh = dailyKwh;
   usage.textContent = (dailyKwh * 24).toFixed(2);
@@ -216,6 +241,12 @@ function generateSuggestions(price) {
   addTip('Unplug idle electronics or use smart power strips to cut standby power.');
 }
 
+function setActiveDevice(i) {
+  activeDeviceIndex = i;
+  addTip(`Now tracking: ${devices[i].name}`);
+  renderDevices();
+}
+
 function addTip(text) {
   const li = document.createElement('li');
   li.textContent = text;
@@ -252,22 +283,4 @@ renderDevices();
 
 </body>
 </html>
-document.getElementById('startBtn').onclick = () => {
-  document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
-  startTracking();
-};
 
-document.getElementById('learnBtn').onclick = () => {
-  alert('EnergiAI estimates real-time device energy cost locally using wattage models.');
-};
-
-// Auto optimization button
-document.getElementById('optimizeBtn').onclick = () => {
-  autoOptimize();
-};
-
-renderDevices();
-</script>
-
-</body>
-</html>
