@@ -3,211 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartSaver AI - Account & Subscription</title>
+<title>SmartSaver AI - AI Travel & Shopping</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#333; }
-header { background:#0071dc; color:white; padding:20px; text-align:center; }
-header h1 { margin:0; }
-header p { margin:5px 0 0; }
+body { margin:0; font-family: Arial, sans-serif; background:#f3f3f3; color:#111; }
+a { text-decoration:none; color:#111; }
 
-/* ACCOUNT SECTION */
-.section { max-width:1200px; margin:20px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-.section h2 { color:#0071dc; margin-bottom:15px; }
-input { padding:10px; margin:5px 0 15px; width:100%; border:1px solid #ccc; border-radius:5px; }
-button { padding:10px; background:#0071dc; color:white; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
-button:hover { background:#005bb5; }
-.cards-grid { display:flex; flex-wrap:wrap; justify-content:flex-start; }
+/* TOP NAVBAR */
+.navbar { background:#232f3e; color:white; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
+.navbar h1 { font-size:1.5em; margin:0; color:#fff; }
+.navbar input { padding:5px; width:300px; border:none; border-radius:3px; }
+.navbar button { padding:5px 10px; margin-left:5px; border:none; border-radius:3px; background:#febd69; cursor:pointer; }
 
-/* CARD STYLE */
-.card { background:white; padding:15px; margin:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); flex-direction:column; width:250px; transition:0.3s; }
+/* TOP BANNER CAROUSEL */
+.banner-carousel { display:flex; overflow:hidden; border-radius:8px; margin:20px auto; max-width:1200px; height:80px; }
+.slide { flex:0 0 100%; display:flex; align-items:center; justify-content:center; font-size:1.2em; font-weight:bold; transition:0.5s; }
+
+/* MAIN LAYOUT */
+.container { display:flex; max-width:1200px; margin:20px auto; gap:20px; }
+.sidebar { width:220px; background:white; padding:20px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+.main { flex:1; }
+
+/* SIDEBAR LINKS */
+.sidebar h3 { margin-top:0; color:#0071dc; }
+.sidebar ul { list-style:none; padding:0; }
+.sidebar ul li { padding:8px 0; cursor:pointer; }
+.sidebar ul li:hover { color:#0071dc; }
+
+/* ACCOUNT BANNER */
+.account-banner { background:#fff3cd; padding:10px; margin-bottom:20px; border-radius:5px; color:#856404; }
+
+/* SECTION BANNERS */
+.section { margin-bottom:30px; }
+.section h2 { margin-bottom:10px; color:#0071dc; }
+
+/* CARD GRID */
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px; }
+.card { position:relative; background:white; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); transition:0.3s; }
 .card:hover { box-shadow:0 5px 15px rgba(0,0,0,0.2); }
-.card h3 { margin:0; font-size:1.1em; }
-.card p { margin:5px 0; }
-.card .badge { background:#ff9800; color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; margin-right:5px; }
+.card h3 { font-size:1em; margin:5px 0; }
+.card p { margin:5px 0; font-size:0.9em; }
+.card .badge { background:#ff9900; color:white; padding:2px 5px; border-radius:3px; font-size:0.8em; margin-right:5px; }
+.card button { padding:8px 10px; background:#0071dc; color:white; border:none; border-radius:5px; cursor:pointer; transition:0.3s; width:100%; margin-top:5px; }
+.card button:hover { background:#005bb5; }
 
-.locked { filter: blur(2px); pointer-events: none; opacity:0.6; }
-.unlock-msg { background:#ffefc4; padding:10px; border-radius:5px; margin:10px 0; }
+/* DEAL RIBBON */
+.card .ribbon { position:absolute; top:10px; left:-5px; background:#e91e63; color:white; padding:5px 10px; font-size:0.8em; font-weight:bold; transform: rotate(-20deg); box-shadow:0 2px 5px rgba(0,0,0,0.2); }
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .container { flex-direction:column; }
+  .sidebar { width:100%; }
+}
 </style>
 </head>
 <body>
 
-<header>
+<!-- TOP NAVBAR -->
+<div class="navbar">
   <h1>SmartSaver AI</h1>
-  <p>AI Travel, Car, Grocery Optimization — Account Required</p>
-</header>
-
-<!-- ACCOUNT SECTION -->
-<div class="section" id="accountSection">
-  <h2>Account & Subscription</h2>
-  <div id="signupDiv">
-    <h3>Sign Up (Free Trial)</h3>
-    <input type="email" id="signupEmail" placeholder="Email">
-    <input type="password" id="signupPass" placeholder="Password">
-    <button onclick="signup()">Sign Up</button>
-  </div>
-
-  <div id="loginDiv">
-    <h3>Login</h3>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPass" placeholder="Password">
-    <button onclick="login()">Login</button>
-  </div>
-
-  <div id="accountStatus"></div>
-</div>
-
-<!-- TRAVEL SECTION -->
-<div class="section" id="travelSection">
-  <h2>Travel Deals</h2>
-  <div id="travelControls">
-    <input type="text" id="destination" placeholder="Destination">
-    <input type="date" id="travelDate">
-    <button onclick="generateTravel()">Generate Travel Options</button>
-  </div>
-  <div id="travelOutput" class="cards-grid locked"></div>
-  <div id="travelLockMsg" class="unlock-msg" style="display:none;">
-    Your trial has expired. <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">Subscribe to unlock</a>
+  <div>
+    <input type="text" id="searchInput" placeholder="Search for travel, car, groceries...">
+    <button onclick="alert('Search simulation')">Search</button>
   </div>
 </div>
 
-<!-- CAR SECTION -->
-<div class="section" id="carSection">
-  <h2>Car Appointments</h2>
-  <div id="carControls">
-    <input type="text" id="carModel" placeholder="Car Model">
-    <input type="text" id="serviceType" placeholder="Service Type">
-    <button onclick="generateCar()">Generate Car Appointments</button>
-  </div>
-  <div id="carOutput" class="cards-grid locked"></div>
-  <div id="carLockMsg" class="unlock-msg" style="display:none;">
-    Your trial has expired. <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">Subscribe to unlock</a>
-  </div>
+<!-- TOP BANNER CAROUSEL -->
+<div class="banner-carousel">
+  <div class="slide" style="background:#0071dc; color:white;">🌟 AI Travel Deals — Save Big This Week!</div>
+  <div class="slide" style="background:#ff9800; color:white;">🚗 Book Your Car Appointments Fast & Easy!</div>
+  <div class="slide" style="background:#4caf50; color:white;">🛒 Optimize Your Grocery Budget Instantly!</div>
 </div>
 
-<!-- GROCERY SECTION -->
-<div class="section" id="grocerySection">
-  <h2>Grocery Deals</h2>
-  <div id="groceryControls">
-    <input type="text" id="groceryList" placeholder="Items (comma separated)">
-    <input type="number" id="groceryBudget" placeholder="Budget">
-    <button onclick="generateGrocery()">Generate Grocery Plan</button>
+<!-- MAIN LAYOUT -->
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="account-banner">
+      Sign up for free to save your preferences! (Optional)
+    </div>
+    <h3>Categories</h3>
+    <ul>
+      <li onclick="scrollToSection('travelSection')">Travel</li>
+      <li onclick="scrollToSection('carSection')">Car Appointments</li>
+      <li onclick="scrollToSection('grocerySection')">Grocery</li>
+    </ul>
   </div>
-  <div id="groceryOutput" class="cards-grid locked"></div>
-  <div id="groceryLockMsg" class="unlock-msg" style="display:none;">
-    Your trial has expired. <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">Subscribe to unlock</a>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- TRAVEL SECTION -->
+    <div class="section" id="travelSection">
+      <h2>Travel Deals</h2>
+      <input type="text" id="destination" placeholder="Destination">
+      <input type="date" id="travelDate">
+      <button onclick="generateTravel()">Generate Travel Options</button>
+      <div id="travelOutput" class="cards-grid"></div>
+    </div>
+
+    <!-- CAR SECTION -->
+    <div class="section" id="carSection">
+      <h2>Car Appointments</h2>
+      <input type="text" id="carModel" placeholder="Car Model">
+      <input type="text" id="serviceType" placeholder="Service Type">
+      <button onclick="generateCar()">Generate Car Appointments</button>
+      <div id="carOutput" class="cards-grid"></div>
+    </div>
+
+    <!-- GROCERY SECTION -->
+    <div class="section" id="grocerySection">
+      <h2>Grocery Deals</h2>
+      <input type="text" id="groceryList" placeholder="Items (comma separated)">
+      <input type="number" id="groceryBudget" placeholder="Budget">
+      <button onclick="generateGrocery()">Generate Grocery Plan</button>
+      <div id="groceryOutput" class="cards-grid"></div>
+    </div>
+
   </div>
 </div>
 
 <script>
-// ACCOUNT SYSTEM
-let accounts = JSON.parse(localStorage.getItem('accounts') || '{}');
-let currentUser = null;
-
-function signup(){
-  const email = document.getElementById('signupEmail').value;
-  const pass = document.getElementById('signupPass').value;
-  if(!email || !pass){ alert("Enter email & password"); return; }
-  if(accounts[email]){ alert("Account already exists"); return; }
-
-  const trialDays = 7;
-  const expiry = new Date();
-  expiry.setDate(expiry.getDate() + trialDays);
-
-  accounts[email] = { password: pass, trialExpiry: expiry.toISOString(), paid: false };
-  localStorage.setItem('accounts', JSON.stringify(accounts));
-  alert(`Account created! Free trial until ${expiry.toDateString()}`);
+// CAROUSEL
+let slideIndex = 0;
+function showSlides() {
+  const slides = document.querySelectorAll('.banner-carousel .slide');
+  slides.forEach(s => s.style.display='none');
+  slideIndex++;
+  if(slideIndex>slides.length) slideIndex=1;
+  slides[slideIndex-1].style.display='flex';
+  setTimeout(showSlides, 4000);
 }
+showSlides();
 
-function login(){
-  const email = document.getElementById('loginEmail').value;
-  const pass = document.getElementById('loginPass').value;
-  if(!accounts[email] || accounts[email].password !== pass){
-    alert("Invalid credentials"); return;
-  }
-  currentUser = email;
-  updateAccess();
-}
-
-function updateAccess(){
-  if(!currentUser) return;
-  const account = accounts[currentUser];
-  const now = new Date();
-  const trialExpiry = new Date(account.trialExpiry);
-
-  const sections = [
-    {cards:"#travelOutput", msg:"#travelLockMsg"},
-    {cards:"#carOutput", msg:"#carLockMsg"},
-    {cards:"#groceryOutput", msg:"#groceryLockMsg"}
-  ];
-
-  if(account.paid || now <= trialExpiry){
-    document.getElementById('accountStatus').innerHTML = `
-      <p>Welcome, ${currentUser}!</p>
-      <p>${account.paid ? "Paid Subscriber" : "Free Trial Active until " + trialExpiry.toDateString()}</p>
-      <p>You can now access the AI features.</p>`;
-    sections.forEach(s=>{
-      document.querySelector(s.cards).classList.remove('locked');
-      document.querySelector(s.msg).style.display = 'none';
-    });
-  } else {
-    document.getElementById('accountStatus').innerHTML = `
-      <p>Your trial has expired!</p>
-      <p>Please <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">subscribe now</a> to continue using the website.</p>`;
-    sections.forEach(s=>{
-      document.querySelector(s.cards).classList.add('locked');
-      document.querySelector(s.msg).style.display = 'block';
-    });
-  }
-}
-
-// AI Simulation Helpers
+// RANDOM PRICE & BADGE
 function randomPrice(min,max){ return (Math.random()*(max-min)+min).toFixed(2); }
-function randomBadge(){ const badges = ["Best Value","Cheapest","Fastest","Limited Deal"]; return badges[Math.floor(Math.random()*badges.length)]; }
+function randomBadge(){ const badges=["Best Value","Cheapest","Limited Deal","Top Rated"]; return badges[Math.floor(Math.random()*badges.length)]; }
+function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// ADD DEAL RIBBON
+function addRibbon(card){
+  if(Math.random()>0.7){
+    const ribbon = document.createElement('div');
+    ribbon.className='ribbon';
+    ribbon.innerText='Deal of the Day';
+    card.appendChild(ribbon);
+  }
+}
 
 // TRAVEL
 function generateTravel(){
-  if(!currentUser) { alert("Please login first"); return; }
-  const account = accounts[currentUser];
-  if(!account.paid && new Date() > new Date(account.trialExpiry)) return;
   const dest = document.getElementById('destination').value;
   const date = document.getElementById('travelDate').value;
-  const types = ["Flight","Hotel","Train","Bus"];
-  let outputHTML = '';
-  types.forEach(t=>{ outputHTML += `<div class="card"><h3>${t} to ${dest} <span class="badge">${randomBadge()}</span></h3><p>Date: ${date}</p><p>Price: $${randomPrice(50,400)}</p><button>Book</button></div>`; });
-  document.getElementById('travelOutput').innerHTML = outputHTML;
+  const types=["Flight","Hotel","Train","Bus"];
+  let html='';
+  types.forEach(t=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${t} to ${dest} <span class="badge">${randomBadge()}</span></h3><p>Date: ${date}</p><p>Price: $${randomPrice(50,400)}</p><button>Book</button>`;
+    addRibbon(card);
+    document.getElementById('travelOutput').appendChild(card);
+  });
 }
 
 // CAR
 function generateCar(){
-  if(!currentUser) { alert("Please login first"); return; }
-  const account = accounts[currentUser];
-  if(!account.paid && new Date() > new Date(account.trialExpiry)) return;
-  const model = document.getElementById('carModel').value;
-  const service = document.getElementById('serviceType').value;
-  const times = ["9:00AM","11:00AM","1:00PM","3:00PM","5:00PM"];
-  let outputHTML = '';
-  times.forEach(t=>{ outputHTML += `<div class="card"><h3>${service} for ${model} <span class="badge">${randomBadge()}</span></h3><p>Time: ${t}</p><p>Price: $${randomPrice(50,200)}</p><button>Book</button></div>`; });
-  document.getElementById('carOutput').innerHTML = outputHTML;
+  const model=document.getElementById('carModel').value;
+  const service=document.getElementById('serviceType').value;
+  const times=["9:00AM","11:00AM","1:00PM","3:00PM","5:00PM"];
+  times.forEach(t=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${service} for ${model} <span class="badge">${randomBadge()}</span></h3><p>Time: ${t}</p><p>Price: $${randomPrice(50,200)}</p><button>Book</button>`;
+    addRibbon(card);
+    document.getElementById('carOutput').appendChild(card);
+  });
 }
 
 // GROCERY
 function generateGrocery(){
-  if(!currentUser) { alert("Please login first"); return; }
-  const account = accounts[currentUser];
-  if(!account.paid && new Date() > new Date(account.trialExpiry)) return;
-  const items = document.getElementById('groceryList').value.split(',').map(i=>i.trim());
-  const budget = Number(document.getElementById('groceryBudget').value);
-  let total = 0;
-  let outputHTML = '';
+  const items=document.getElementById('groceryList').value.split(',').map(i=>i.trim());
+  const budget=Number(document.getElementById('groceryBudget').value);
+  let total=0;
   items.forEach(i=>{
-    const price = parseFloat(randomPrice(1,10));
-    total += price;
+    const price=parseFloat(randomPrice(1,10));
+    total+=price;
+    const card=document.createElement('div');
+    card.className='card';
     const badge = Math.random()>0.7 ? `<span class="badge">On Sale!</span>` : '';
-    outputHTML += `<div class="card"><h3>${i} ${badge}</h3><p>Price: $${price}</p><button>Add to Cart</button></div>`;
+    card.innerHTML=`<h3>${i} ${badge}</h3><p>Price: $${price}</p><button>Add to Cart</button>`;
+    addRibbon(card);
+    document.getElementById('groceryOutput').appendChild(card);
   });
-  outputHTML += `<div style="width:100%; padding:10px;"><b>Total: $${total.toFixed(2)} / Budget: $${budget}</b></div>`;
-  document.getElementById('groceryOutput').innerHTML = outputHTML;
+  const totalDiv=document.createElement('div');
+  totalDiv.style.padding='10px';
+  totalDiv.innerHTML=`<b>Total: $${total.toFixed(2)} / Budget: $${budget}</b>`;
+  document.getElementById('groceryOutput').appendChild(totalDiv);
 }
 </script>
+
 </body>
 </html>
