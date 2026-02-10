@@ -1,150 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FinSight AI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.4.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna@1.0.0/dist/qna.min.js"></script>
-  <style>
-    :root{--bg:#0b1020;--card:#121833;--accent:#6ee7b7;--text:#e6e9f2;--muted:#9aa3b2}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:linear-gradient(180deg,#0b1020,#0e1530);color:var(--text)}
-    header{padding:24px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.06)}
-    .logo{font-weight:700;font-size:20px}
-    .container{max-width:1200px;margin:auto;padding:24px}
-    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;margin-bottom:30px}
-    .card{background:var(--card);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    h1{font-size:40px;margin:0 0 12px} h3{margin-top:0} p{color:var(--muted)}
-    button{background:var(--accent);color:#042018;border:none;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer}
-    input, textarea{width:100%;margin-top:8px;margin-bottom:12px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:#0b1020;color:var(--text)}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-    .ai-box{min-height:140px;background:#0b1020;border-radius:10px;padding:12px;border:1px dashed rgba(255,255,255,0.1)}
-    footer{margin-top:40px;padding:20px;text-align:center;color:var(--muted);font-size:13px}
-    canvas{margin-top:10px}
-    .goal{font-size:14px}
-    @media(max-width:900px){.hero,.grid{grid-template-columns:1fr}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartSaver AI - Account & Subscription</title>
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#333; }
+header { background:#0071dc; color:white; padding:20px; text-align:center; }
+header h1 { margin:0; }
+header p { margin:5px 0 0; }
+
+/* ACCOUNT SECTION */
+.section { max-width:1200px; margin:20px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+.section h2 { color:#0071dc; margin-bottom:15px; }
+input { padding:10px; margin:5px 0 15px; width:100%; border:1px solid #ccc; border-radius:5px; }
+button { padding:10px; background:#0071dc; color:white; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
+button:hover { background:#005bb5; }
+.cards-grid { display:flex; flex-wrap:wrap; justify-content:flex-start; }
+
+/* CARD STYLE */
+.card { background:white; padding:15px; margin:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); flex-direction:column; width:250px; transition:0.3s; }
+.card:hover { box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+.card h3 { margin:0; font-size:1.1em; }
+.card p { margin:5px 0; }
+.card .badge { background:#ff9800; color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; margin-right:5px; }
+
+.locked { filter: blur(2px); pointer-events: none; opacity:0.6; }
+.unlock-msg { background:#ffefc4; padding:10px; border-radius:5px; margin:10px 0; }
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo">FinSight AI</div>
-    <div>On-Device AI Finance</div>
-  </header>
 
-  <div class="container">
-    <section class="hero">
-      <div>
-        <h1>Smarter Money Decisions, Fully On-Device</h1>
-        <p>Track income and expenses, set goals, and get AI-generated guidance, entirely locally.</p>
-      </div>
-      <div class="card">
-        <strong>Monthly Snapshot</strong>
-        <p>Income: <span id="snapIncome">$0</span></p>
-        <p>Expenses: <span id="snapExpenses">$0</span></p>
-        <p>Savings: <span id="snapSavings">$0</span></p>
-        <p class="goal">Goal Progress: <span id="goalProgress">0%</span></p>
-      </div>
-    </section>
+<header>
+  <h1>SmartSaver AI</h1>
+  <p>AI Travel, Car, Grocery Optimization — Account Required</p>
+</header>
 
-    <section class="grid">
-      <div class="card">
-        <h3>Monthly Data</h3>
-        <input id="income" type="number" placeholder="Monthly income" />
-        <input id="expenses" type="number" placeholder="Monthly expenses" />
-        <textarea id="notes" rows="4" placeholder="Spending notes (optional)"></textarea>
-        <h3>Savings Goal</h3>
-        <input id="goalAmount" type="number" placeholder="Goal amount (ex: 1000)" />
-        <input id="goalDate" type="date" />
-        <button onclick="saveData()">Save & Analyze</button>
-      </div>
-
-      <div class="card">
-        <h3>AI Generated Financial Guidance</h3>
-        <div id="aiOutput" class="ai-box">Your AI guidance will appear here.</div>
-      </div>
-
-      <div class="card">
-        <h3>Dashboard</h3>
-        <canvas id="financeChart" height="180"></canvas>
-      </div>
-    </section>
-
-    <footer>
-      FinSight AI — Fully local intelligent guidance. No external APIs. Not financial advice.
-    </footer>
+<!-- ACCOUNT SECTION -->
+<div class="section" id="accountSection">
+  <h2>Account & Subscription</h2>
+  <div id="signupDiv">
+    <h3>Sign Up (Free Trial)</h3>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPass" placeholder="Password">
+    <button onclick="signup()">Sign Up</button>
   </div>
 
-  <script>
-    let chart;
-    let model;
+  <div id="loginDiv">
+    <h3>Login</h3>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
 
-    async function loadQnAModel(){
-      model = await qna.load();
-    }
+  <div id="accountStatus"></div>
+</div>
 
-    function loadData(){
-      const data = JSON.parse(localStorage.getItem('financeData')) || [];
-      const goal = JSON.parse(localStorage.getItem('financeGoal')) || null;
-      if(data.length) updateUI(data[data.length-1], data, goal);
-      loadQnAModel();
-    }
+<!-- TRAVEL SECTION -->
+<div class="section" id="travelSection">
+  <h2>Travel Deals</h2>
+  <div id="travelControls">
+    <input type="text" id="destination" placeholder="Destination">
+    <input type="date" id="travelDate">
+    <button onclick="generateTravel()">Generate Travel Options</button>
+  </div>
+  <div id="travelOutput" class="cards-grid locked"></div>
+  <div id="travelLockMsg" class="unlock-msg" style="display:none;">
+    Your trial has expired. <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">Subscribe to unlock</a>
+  </div>
+</div>
 
-    async function generateAIGuidance(latest,totalSavings,goal){
-      const prompt = `I have an income of $${latest.income} and expenses of $${latest.expenses}. Notes: ${latest.notes}. Total savings so far: $${totalSavings}. Goal: ${goal?goal.amount+' by '+goal.date:'None'}. Generate concise financial guidance.`;
-      let advice = prompt;
-      if(model){
-        try{
-          const answers = await model.findAnswers(prompt,prompt);
-          if(answers.length) advice = answers[0].text;
-        } catch(e){console.error(e);}
-      }
-      document.getElementById('aiOutput').textContent = advice;
-    }
+<!-- CAR SECTION -->
+<div class="section" id="carSection">
+  <h2>Car Appointments</h2>
+  <div id="carControls">
+    <input type="text" id="carModel" placeholder="Car Model">
+    <input type="text" id="serviceType" placeholder="Service Type">
+    <button onclick="generateCar()">Generate Car Appointments</button>
+  </div>
+  <div id="carOutput" class="cards-grid locked"></div>
+  <div id="carLockMsg" class="unlock-msg" style="display:none;">
+    Your trial has expired. <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">Subscribe to unlock</a>
+  </div>
+</div>
 
-    function saveData(){
-      const income=parseFloat(document.getElementById('income').value)||0;
-      const expenses=parseFloat(document.getElementById('expenses').value)||0;
-      const notes=document.getElementById('notes').value.toLowerCase();
-      const goalAmount=parseFloat(document.getElementById('goalAmount').value)||0;
-      const goalDate=document.getElementById('goalDate').value;
-      const entry={date:new Date().toLocaleDateString(),income,expenses,savings:income-expenses,notes};
-      const data=JSON.parse(localStorage.getItem('financeData'))||[];
-      data.push(entry);
-      localStorage.setItem('financeData',JSON.stringify(data));
-      if(goalAmount){
-        const goal={amount:goalAmount,date:goalDate};
-        localStorage.setItem('financeGoal',JSON.stringify(goal));
-      }
-      const goal=JSON.parse(localStorage.getItem('financeGoal'))||null;
-      updateUI(entry,data,goal);
-    }
+<!-- GROCERY SECTION -->
+<div class="section" id="grocerySection">
+  <h2>Grocery Deals</h2>
+  <div id="groceryControls">
+    <input type="text" id="groceryList" placeholder="Items (comma separated)">
+    <input type="number" id="groceryBudget" placeholder="Budget">
+    <button onclick="generateGrocery()">Generate Grocery Plan</button>
+  </div>
+  <div id="groceryOutput" class="cards-grid locked"></div>
+  <div id="groceryLockMsg" class="unlock-msg" style="display:none;">
+    Your trial has expired. <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">Subscribe to unlock</a>
+  </div>
+</div>
 
-    function updateUI(latest,all,goal){
-      document.getElementById('snapIncome').textContent='$'+latest.income.toFixed(2);
-      document.getElementById('snapExpenses').textContent='$'+latest.expenses.toFixed(2);
-      document.getElementById('snapSavings').textContent='$'+latest.savings.toFixed(2);
-      const totalSavings=all.reduce((s,d)=>s+d.savings,0);
-      if(goal&&goal.amount){
-        const progress=Math.min(100,(totalSavings/goal.amount)*100);
-        document.getElementById('goalProgress').textContent=progress.toFixed(1)+'%';
-      }
-      generateAIGuidance(latest,totalSavings,goal);
-      renderChart(all);
-    }
+<script>
+// ACCOUNT SYSTEM
+let accounts = JSON.parse(localStorage.getItem('accounts') || '{}');
+let currentUser = null;
 
-    function renderChart(data){
-      const labels=data.map(d=>d.date);
-      const incomeData=data.map(d=>d.income);
-      const expenseData=data.map(d=>d.expenses);
-      const savingsData=data.map(d=>d.savings);
-      if(chart) chart.destroy();
-      chart=new Chart(document.getElementById('financeChart'),{type:'line',data:{labels,datasets:[{label:'Income',data:incomeData},{label:'Expenses',data:expenseData},{label:'Savings',data:savingsData}]},options:{plugins:{legend:{labels:{color:'#e6e9f2'}}},scales:{x:{ticks:{color:'#9aa3b2'}},y:{ticks:{color:'#9aa3b2'}}}}});
-    }
+function signup(){
+  const email = document.getElementById('signupEmail').value;
+  const pass = document.getElementById('signupPass').value;
+  if(!email || !pass){ alert("Enter email & password"); return; }
+  if(accounts[email]){ alert("Account already exists"); return; }
 
-    loadData();
-  </script>
+  const trialDays = 7;
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + trialDays);
+
+  accounts[email] = { password: pass, trialExpiry: expiry.toISOString(), paid: false };
+  localStorage.setItem('accounts', JSON.stringify(accounts));
+  alert(`Account created! Free trial until ${expiry.toDateString()}`);
+}
+
+function login(){
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  if(!accounts[email] || accounts[email].password !== pass){
+    alert("Invalid credentials"); return;
+  }
+  currentUser = email;
+  updateAccess();
+}
+
+function updateAccess(){
+  if(!currentUser) return;
+  const account = accounts[currentUser];
+  const now = new Date();
+  const trialExpiry = new Date(account.trialExpiry);
+
+  const sections = [
+    {cards:"#travelOutput", msg:"#travelLockMsg"},
+    {cards:"#carOutput", msg:"#carLockMsg"},
+    {cards:"#groceryOutput", msg:"#groceryLockMsg"}
+  ];
+
+  if(account.paid || now <= trialExpiry){
+    document.getElementById('accountStatus').innerHTML = `
+      <p>Welcome, ${currentUser}!</p>
+      <p>${account.paid ? "Paid Subscriber" : "Free Trial Active until " + trialExpiry.toDateString()}</p>
+      <p>You can now access the AI features.</p>`;
+    sections.forEach(s=>{
+      document.querySelector(s.cards).classList.remove('locked');
+      document.querySelector(s.msg).style.display = 'none';
+    });
+  } else {
+    document.getElementById('accountStatus').innerHTML = `
+      <p>Your trial has expired!</p>
+      <p>Please <a href="https://www.paypal.com/paypalme/YOURLINK" target="_blank">subscribe now</a> to continue using the website.</p>`;
+    sections.forEach(s=>{
+      document.querySelector(s.cards).classList.add('locked');
+      document.querySelector(s.msg).style.display = 'block';
+    });
+  }
+}
+
+// AI Simulation Helpers
+function randomPrice(min,max){ return (Math.random()*(max-min)+min).toFixed(2); }
+function randomBadge(){ const badges = ["Best Value","Cheapest","Fastest","Limited Deal"]; return badges[Math.floor(Math.random()*badges.length)]; }
+
+// TRAVEL
+function generateTravel(){
+  if(!currentUser) { alert("Please login first"); return; }
+  const account = accounts[currentUser];
+  if(!account.paid && new Date() > new Date(account.trialExpiry)) return;
+  const dest = document.getElementById('destination').value;
+  const date = document.getElementById('travelDate').value;
+  const types = ["Flight","Hotel","Train","Bus"];
+  let outputHTML = '';
+  types.forEach(t=>{ outputHTML += `<div class="card"><h3>${t} to ${dest} <span class="badge">${randomBadge()}</span></h3><p>Date: ${date}</p><p>Price: $${randomPrice(50,400)}</p><button>Book</button></div>`; });
+  document.getElementById('travelOutput').innerHTML = outputHTML;
+}
+
+// CAR
+function generateCar(){
+  if(!currentUser) { alert("Please login first"); return; }
+  const account = accounts[currentUser];
+  if(!account.paid && new Date() > new Date(account.trialExpiry)) return;
+  const model = document.getElementById('carModel').value;
+  const service = document.getElementById('serviceType').value;
+  const times = ["9:00AM","11:00AM","1:00PM","3:00PM","5:00PM"];
+  let outputHTML = '';
+  times.forEach(t=>{ outputHTML += `<div class="card"><h3>${service} for ${model} <span class="badge">${randomBadge()}</span></h3><p>Time: ${t}</p><p>Price: $${randomPrice(50,200)}</p><button>Book</button></div>`; });
+  document.getElementById('carOutput').innerHTML = outputHTML;
+}
+
+// GROCERY
+function generateGrocery(){
+  if(!currentUser) { alert("Please login first"); return; }
+  const account = accounts[currentUser];
+  if(!account.paid && new Date() > new Date(account.trialExpiry)) return;
+  const items = document.getElementById('groceryList').value.split(',').map(i=>i.trim());
+  const budget = Number(document.getElementById('groceryBudget').value);
+  let total = 0;
+  let outputHTML = '';
+  items.forEach(i=>{
+    const price = parseFloat(randomPrice(1,10));
+    total += price;
+    const badge = Math.random()>0.7 ? `<span class="badge">On Sale!</span>` : '';
+    outputHTML += `<div class="card"><h3>${i} ${badge}</h3><p>Price: $${price}</p><button>Add to Cart</button></div>`;
+  });
+  outputHTML += `<div style="width:100%; padding:10px;"><b>Total: $${total.toFixed(2)} / Budget: $${budget}</b></div>`;
+  document.getElementById('groceryOutput').innerHTML = outputHTML;
+}
+</script>
 </body>
 </html>
