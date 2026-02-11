@@ -3,120 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartSaver AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>SmartBudget AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root{
+--bg:#f4f6f9;
+--card:#ffffff;
+--text:#111;
+--accent:#111;
+}
+
+.dark{
+--bg:#0f1115;
+--card:#1a1d24;
+--text:#ffffff;
+--accent:#ffffff;
+}
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:#f4f6f9;color:#111;}
+body{background:var(--bg);color:var(--text);transition:0.3s;}
+
 header{
-    background:white;
-    padding:20px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+background:var(--card);
+padding:20px 60px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 2px 15px rgba(0,0,0,0.05);
 }
-.logo{font-weight:700;font-size:22px;}
+
+.logo{font-size:22px;font-weight:700;}
+
+.toggle{
+padding:10px 18px;
+border-radius:30px;
+border:none;
+cursor:pointer;
+background:var(--accent);
+color:var(--bg);
+font-weight:600;
+}
+
 .hero{
-    background:linear-gradient(135deg,#111,#333);
-    color:white;
-    padding:60px 40px;
-    text-align:center;
+padding:100px 60px;
+text-align:center;
+background:linear-gradient(135deg,#111,#333);
+color:white;
 }
-.section{padding:50px 40px;}
+
+.hero h1{font-size:48px;margin-bottom:10px;}
+
+.section{padding:60px;}
+
+.tabs{
+display:flex;
+gap:15px;
+margin-bottom:40px;
+flex-wrap:wrap;
+}
+
+.tabs button{
+padding:10px 20px;
+border-radius:30px;
+border:1px solid #ccc;
+background:var(--card);
+cursor:pointer;
+}
+
+.tabs button.active{
+background:var(--accent);
+color:var(--bg);
+}
+
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-    gap:25px;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:30px;
 }
+
 .card{
-    background:white;
-    border-radius:25px;
-    padding:15px;
-    box-shadow:0 8px 25px rgba(0,0,0,0.05);
+background:var(--card);
+border-radius:30px;
+padding:18px;
+box-shadow:0 15px 35px rgba(0,0,0,0.07);
+transition:0.3s;
 }
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 20px 45px rgba(0,0,0,0.15);
+}
+
 .card img{
-    width:100%;
-    height:170px;
-    object-fit:cover;
-    border-radius:20px;
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:25px;
 }
-.card h3{margin-top:10px;}
-.price{margin:10px 0;font-weight:600;}
+
+.price{
+font-weight:700;
+margin:8px 0;
+}
+
 .badge{
-    background:#00c853;
-    color:white;
-    padding:5px 10px;
-    border-radius:20px;
-    font-size:12px;
-    display:inline-block;
+display:inline-block;
+background:var(--accent);
+color:var(--bg);
+padding:6px 12px;
+border-radius:25px;
+font-size:12px;
 }
-button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:40px;
-    background:#111;
-    color:white;
-    cursor:pointer;
-    font-weight:600;
-}
-.modal{
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background:rgba(0,0,0,0.6);
-    display:none;
-    justify-content:center;
-    align-items:center;
-}
-.modal-content{
-    background:white;
-    padding:30px;
-    border-radius:25px;
-    width:350px;
-}
-table{
-    width:100%;
-    margin-top:15px;
-    border-collapse:collapse;
-}
-td{
-    padding:6px 0;
-    font-size:14px;
-}
+
 .small{
-    font-size:12px;
-    color:#666;
-    margin-top:8px;
+font-size:12px;
+opacity:0.7;
+margin-top:6px;
 }
+
+.card button{
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:40px;
+background:var(--accent);
+color:var(--bg);
+cursor:pointer;
+width:100%;
+}
+
+.loader{
+text-align:center;
+padding:60px;
+font-size:20px;
+}
+
+.modal{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+background:var(--card);
+padding:35px;
+border-radius:30px;
+width:400px;
+}
+
+table{width:100%;margin-top:10px;}
+td{padding:6px 0;}
+
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">SmartSaver AI</div>
-<div>Session Views: <span id="sessionViews">0</span></div>
+<div class="logo">SmartBudget AI</div>
+<button class="toggle" onclick="toggleMode()">Toggle Mode</button>
 </header>
 
 <div class="hero">
-<h1>AI Optimization Engine</h1>
-<p>Transparent • Algorithm-Based • No External APIs Connected</p>
+<h1>AI Optimized Marketplace</h1>
+<p>Personalized pricing logic per session • Transparent algorithm system</p>
 </div>
 
 <div class="section">
-<div class="grid" id="productGrid"></div>
+
+<div class="tabs">
+<button onclick="filter('all')" class="active">All</button>
+<button onclick="filter('travel')">Travel</button>
+<button onclick="filter('cars')">Cars</button>
+<button onclick="filter('repairs')">Repairs</button>
+<button onclick="filter('grocery')">Grocery</button>
+<button onclick="filter('tech')">Tech</button>
+</div>
+
+<div id="grid" class="grid"></div>
+<div id="loader" class="loader">AI scanning marketplace...</div>
+
 </div>
 
 <div class="modal" id="modal">
 <div class="modal-content">
 <h3>Market Comparison</h3>
-<div id="comparisonTable"></div>
-<div class="small">Generated Market Simulation — No external APIs connected.</div>
+<div id="providers"></div>
+<p class="small">Generated Market Simulation — No external APIs connected.</p>
 <br>
-<input type="number" id="depositPercent" placeholder="Deposit % (15-100)" style="width:100%;padding:10px;border-radius:20px;border:1px solid #ccc;">
+<input type="number" id="deposit" placeholder="Deposit % (15-100)" style="width:100%;padding:10px;border-radius:20px;border:1px solid #ccc;">
 <br><br>
 <button onclick="confirmDeposit()">Continue</button>
 </div>
@@ -124,85 +204,85 @@ td{
 
 <script>
 
-let sessionViews = 0;
-let selectedPrice = 0;
-let selectedProviders = [];
+let selectedPrice=0;
+let selectedProviders=[];
 
-const baseProducts = [
-{ name:"NYC → Miami Flight", min:100, max:200 },
-{ name:"Tesla Model 3 2024", min:35000, max:42000 },
-{ name:"Brake Replacement", min:200, max:400 },
-{ name:"Weekly Grocery Basket", min:50, max:120 }
-];
+const categories=["travel","cars","repairs","grocery","tech"];
+const items=[];
 
-function random(min,max){
+/* Generate 60 dynamic items */
+for(let i=1;i<=60;i++){
+items.push({
+name:"Smart Optimized Deal "+i,
+category:categories[Math.floor(Math.random()*categories.length)],
+min:30*i,
+max:50*i
+});
+}
+
+function rand(min,max){
 return Math.floor(Math.random()*(max-min+1))+min;
 }
 
-function generateProviders(baseMin,baseMax){
-let providers=[];
-for(let i=0;i<4;i++){
-providers.push(random(baseMin,baseMax));
-}
-return providers;
-}
+/* AI Personalization: session-based multiplier */
+const sessionFactor = 0.9 + Math.random()*0.2;
 
-function applyTimeAdjustment(price){
-let hour = new Date().getHours();
-if(hour >=18){
-return price + Math.round(price*0.05);
-}
-return price;
-}
-
-function renderProducts(){
-const grid=document.getElementById("productGrid");
+function render(list){
+const grid=document.getElementById("grid");
 grid.innerHTML="";
 
-baseProducts.forEach(product=>{
+list.forEach(item=>{
+let providers=[rand(item.min,item.max),rand(item.min,item.max),rand(item.min,item.max)];
+providers=providers.map(p=>Math.round(p*sessionFactor));
 
-let providers = generateProviders(product.min,product.max);
-let lowest = Math.min(...providers);
-let highest = Math.max(...providers);
-let adjusted = applyTimeAdjustment(lowest);
-
-let confidence = Math.round(((highest-adjusted)/highest)*100);
+let lowest=Math.min(...providers);
+let highest=Math.max(...providers);
+let confidence=Math.round(((highest-lowest)/highest)*100);
 
 grid.innerHTML+=`
 <div class="card">
 <img src="https://picsum.photos/400/300?random=${Math.random()}">
-<h3>${product.name}</h3>
-<div class="price">$${adjusted}</div>
-<div class="badge">$${highest-adjusted} lower than highest provider</div>
-<div class="small">Confidence Score: ${confidence}% below generated market peak</div>
-<br>
-<button onclick="openModal(${adjusted},${JSON.stringify(providers)})">View Details</button>
+<h3>${item.name}</h3>
+<div class="price">$${lowest}</div>
+<div class="badge">$${highest-lowest} below highest provider</div>
+<div class="small">Confidence Score: ${confidence}%</div>
+<button onclick='openModal(${lowest},${JSON.stringify(providers)})'>View Deal</button>
 </div>
 `;
 });
+
+document.getElementById("loader").style.display="none";
+}
+
+function filter(cat){
+document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+event.target.classList.add("active");
+
+if(cat==="all"){
+render(items);
+}else{
+render(items.filter(i=>i.category===cat));
+}
 }
 
 function openModal(price,providers){
 selectedPrice=price;
 selectedProviders=providers;
 
-sessionViews++;
-document.getElementById("sessionViews").innerText=sessionViews;
-
-let tableHTML="<table>";
+let table="<table>";
 providers.forEach((p,i)=>{
-tableHTML+=`<tr><td>Provider ${i+1}</td><td>$${p}</td></tr>`;
+table+=`<tr><td>Provider ${i+1}</td><td>$${p}</td></tr>`;
 });
-tableHTML+="</table>";
+table+="</table>";
 
-document.getElementById("comparisonTable").innerHTML=tableHTML;
+document.getElementById("providers").innerHTML=table;
 document.getElementById("modal").style.display="flex";
 }
 
 function confirmDeposit(){
-let percent=document.getElementById("depositPercent").value;
+let percent=document.getElementById("deposit").value;
 if(percent<15||percent>100){
-alert("Deposit must be between 15% and 100%");
+alert("Deposit must be between 15-100%");
 return;
 }
 let amount=(selectedPrice*percent)/100;
@@ -211,7 +291,14 @@ document.getElementById("modal").style.display="none";
 window.location.href="https://example.com";
 }
 
-renderProducts();
+function toggleMode(){
+document.body.classList.toggle("dark");
+}
+
+/* Simulate scanning delay */
+setTimeout(()=>{
+render(items);
+},1200);
 
 </script>
 
