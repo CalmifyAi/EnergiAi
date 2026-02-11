@@ -8,90 +8,127 @@
 <style>
 body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#eaeaea;
+  font-family:Arial, sans-serif;
+  background:#e3e6e6;
 }
 
-header{
+/* TOP BAR */
+.topbar{
   background:#131921;
   color:white;
-  padding:12px 20px;
+  padding:10px 16px;
   display:flex;
   align-items:center;
-  gap:20px;
+  gap:16px;
 }
-
 .logo{
   font-size:22px;
   font-weight:bold;
   color:#facc15;
 }
-
-.search{
-  flex:1;
-}
-
+.search{flex:1;}
 .search input{
   width:100%;
   padding:8px;
-  font-size:16px;
+  font-size:15px;
+  border-radius:4px;
+  border:none;
 }
 
+/* HERO SLIDER */
 .hero{
-  background:linear-gradient(90deg,#ff9900,#ffc266);
+  position:relative;
+  height:220px;
+  overflow:hidden;
+}
+.slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
   padding:30px;
-  font-size:26px;
+  font-size:28px;
   font-weight:bold;
+  color:#111;
+  opacity:0;
+  transition:opacity 1s;
 }
+.slide.active{opacity:1;}
+.slide.travel{background:linear-gradient(90deg,#ff9900,#ffd699);}
+.slide.car{background:linear-gradient(90deg,#60a5fa,#bfdbfe);}
+.slide.grocery{background:linear-gradient(90deg,#4ade80,#bbf7d0);}
 
-.categories{
+/* SECTIONS */
+.section{padding:20px;}
+.section h2{margin-bottom:10px;}
+
+/* GRID */
+.grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  padding:20px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
 }
-
 .card{
   background:white;
-  padding:20px;
+  padding:14px;
   border-radius:8px;
-  cursor:pointer;
-  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+  box-shadow:0 2px 5px rgba(0,0,0,0.15);
+  position:relative;
 }
-
-.card:hover{
-  transform:scale(1.03);
+.card img{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:6px;
+  margin-bottom:10px;
 }
-
-#results, #checkout{
-  display:none;
-  background:white;
-  padding:25px;
-  margin:20px;
-  border-radius:8px;
+.badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:#facc15;
+  padding:4px 8px;
+  font-size:12px;
+  font-weight:bold;
+  border-radius:4px;
 }
-
-button{
-  padding:12px;
+.card button{
+  width:100%;
+  padding:10px;
   background:#2563eb;
   color:white;
   border:none;
   border-radius:6px;
   cursor:pointer;
-  margin-top:10px;
-  width:100%;
+}
+.card button:hover{background:#1e40af;}
+
+/* SKELETON */
+.skeleton{
+  background:linear-gradient(90deg,#ddd,#eee,#ddd);
+  animation:load 1.2s infinite;
+  border-radius:6px;
+}
+@keyframes load{
+  0%{background-position:-200px}
+  100%{background-position:200px}
 }
 
-button:hover{
-  background:#1e40af;
+/* CHECKOUT */
+#checkout{
+  display:none;
+  background:white;
+  margin:20px;
+  padding:20px;
+  border-radius:8px;
 }
+.slider{width:100%;}
+.small{font-size:13px;color:#555;}
 
-.slider{
-  width:100%;
-}
-
-.small{
-  font-size:13px;
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:12px;
   color:#555;
 }
 </style>
@@ -99,106 +136,135 @@ button:hover{
 
 <body>
 
-<header>
+<!-- NAV -->
+<div class="topbar">
   <div class="logo">SmartSaver AI</div>
   <div class="search">
-    <input placeholder="Search deals, bookings, groceries...">
+    <input placeholder="Search travel, cars, groceries…">
   </div>
-</header>
+</div>
 
+<!-- HERO SLIDER -->
 <div class="hero">
-  AI finds the cheapest option. You stay in control.
+  <div class="slide travel active">✈️ AI finds the cheapest travel deals</div>
+  <div class="slide car">🚗 Smarter car service bookings</div>
+  <div class="slide grocery">🛒 Grocery shopping, optimized</div>
 </div>
 
-<div class="categories">
-  <div class="card" onclick="generate('travel')">
-    ✈️ Travel Deals
+<!-- TRAVEL -->
+<div class="section">
+<h2>✈️ Travel Deals</h2>
+<div class="grid">
+  <div class="card">
+    <span class="badge">AI Recommended</span>
+    <img src="https://images.unsplash.com/photo-1502920514313-52581002a659">
+    <b>Flight Deal</b>
+    <p>$120 – $350</p>
+    <button onclick="startCheckout('Flight Deal', rand(120,350), 'https://www.google.com/travel')">
+      View Deal
+    </button>
   </div>
-  <div class="card" onclick="generate('car')">
-    🚗 Car Appointments
-  </div>
-  <div class="card" onclick="generate('grocery')">
-    🛒 Grocery Shopping
+
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945">
+    <b>Hotel Deal</b>
+    <p>$80 – $240</p>
+    <button onclick="startCheckout('Hotel Deal', rand(80,240), 'https://www.booking.com')">
+      View Deal
+    </button>
   </div>
 </div>
+</div>
 
-<div id="results"></div>
+<!-- CAR -->
+<div class="section">
+<h2>🚗 Car Appointments</h2>
+<div class="grid">
+  <div class="card">
+    <span class="badge">AI Recommended</span>
+    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2">
+    <b>Oil Change</b>
+    <p>$70 – $150</p>
+    <button onclick="startCheckout('Oil Change', rand(70,150), 'https://www.jiffylube.com')">
+      Book
+    </button>
+  </div>
+</div>
+</div>
+
+<!-- GROCERY -->
+<div class="section">
+<h2>🛒 Grocery Shopping</h2>
+<div class="grid">
+  <div class="card">
+    <span class="badge">AI Recommended</span>
+    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e">
+    <b>Weekly Grocery Plan</b>
+    <p>$50 – $100</p>
+    <button onclick="startCheckout('Grocery Plan', rand(50,100), 'https://www.instacart.com')">
+      Shop
+    </button>
+  </div>
+</div>
+</div>
+
+<!-- CHECKOUT -->
 <div id="checkout"></div>
 
 <script>
-let selectedItem = {};
-let partnerURL = "";
+/* HERO ROTATION */
+let slides=document.querySelectorAll(".slide");
+let index=0;
+setInterval(()=>{
+  slides[index].classList.remove("active");
+  index=(index+1)%slides.length;
+  slides[index].classList.add("active");
+},4000);
+
+let selectedPrice=0;
+let partnerURL="";
 
 function rand(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
 }
 
-function generate(type){
-  const box = document.getElementById("results");
-  box.style.display="block";
-  box.innerHTML="<h2>AI-Optimized Results</h2>";
-
-  let data=[];
-
-  if(type==="travel"){
-    data=[
-      {name:"Flight Deal", price:rand(120,350), url:"https://www.google.com/travel"},
-      {name:"Hotel Deal", price:rand(80,240), url:"https://www.booking.com"}
-    ];
-  }
-
-  if(type==="car"){
-    data=[
-      {name:"Oil Change", price:rand(70,150), url:"https://www.jiffylube.com"},
-      {name:"Brake Service", price:rand(120,260), url:"https://www.firestonecompleteautocare.com"}
-    ];
-  }
-
-  if(type==="grocery"){
-    data=[
-      {name:"Weekly Grocery Plan", price:rand(50,100), url:"https://www.instacart.com"}
-    ];
-  }
-
-  data.forEach(d=>{
-    box.innerHTML+=`
-      <p>
-        <b>${d.name}</b> — $${d.price}
-        <button onclick='openCheckout(${JSON.stringify(d)})'>
-          Continue
-        </button>
-      </p>`;
-  });
-
-  box.scrollIntoView({behavior:"smooth"});
-}
-
-function openCheckout(item){
-  selectedItem=item;
-  partnerURL=item.url;
-
+function startCheckout(name, price, url){
+  selectedPrice=price;
+  partnerURL=url;
   const c=document.getElementById("checkout");
+
   c.style.display="block";
-
   c.innerHTML=`
-    <h2>Service Fee</h2>
-
-    <p><b>${item.name}</b></p>
-    <p>Partner price: <b>$${item.price}</b></p>
-
-    <label>Choose your AI service fee: <b><span id="percent">15</span>%</b></label>
-    <input type="range" min="15" max="100" value="15"
-      class="slider"
-      oninput="updateFee(this.value)">
-
-    <p>Service fee: <b>$<span id="fee">${Math.round(item.price*0.15)}</span></b></p>
-
-    <p class="small">
-      This fee covers AI deal discovery, optimization, and booking assistance.
-    </p>
-
-    <button onclick="payAndGo()">Pay & Continue</button>
+    <div class="skeleton" style="height:20px;margin-bottom:10px"></div>
+    <div class="skeleton" style="height:20px;margin-bottom:10px"></div>
+    <div class="skeleton" style="height:40px"></div>
   `;
+
+  setTimeout(()=>{
+    c.innerHTML=`
+      <h2>Before You Continue</h2>
+      <p><b>${name}</b></p>
+      <p>Partner price: <b>$${price}</b></p>
+
+      <label>Choose AI service fee:
+        <b><span id="percent">15</span>%</b>
+      </label>
+
+      <input type="range" min="15" max="100" value="15"
+        class="slider"
+        oninput="updateFee(this.value)">
+
+      <p>Service fee:
+        <b>$<span id="fee">${Math.round(price*0.15)}</span></b>
+      </p>
+
+      <p class="small">
+        Covers AI deal discovery & booking assistance.
+      </p>
+
+      <button onclick="payAndGo()">Pay & Continue</button>
+    `;
+  },1200);
 
   c.scrollIntoView({behavior:"smooth"});
 }
@@ -206,18 +272,19 @@ function openCheckout(item){
 function updateFee(p){
   document.getElementById("percent").innerText=p;
   document.getElementById("fee").innerText=
-    Math.round(selectedItem.price*(p/100));
+    Math.round(selectedPrice*(p/100));
 }
 
 function payAndGo(){
-  alert("Payment received! Redirecting to partner…");
-  window.location.href = partnerURL;
+  alert("Payment received! Redirecting…");
+  window.location.href=partnerURL;
 }
 </script>
 
-<footer style="text-align:center;padding:20px;font-size:12px;color:#555">
-  SmartSaver AI is an independent service. Fees cover AI-powered assistance only.
+<footer>
+SmartSaver AI is an independent service and not affiliated with third-party merchants.
 </footer>
 
 </body>
 </html>
+
